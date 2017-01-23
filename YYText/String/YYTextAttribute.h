@@ -256,6 +256,7 @@ typedef void(^YYTextAction)(UIView *containerView, NSAttributedString *text, NSR
 @property (nonatomic) CGFloat cornerRadius;                   ///< border corder radius
 @property (nullable, nonatomic, strong) YYTextShadow *shadow; ///< border shadow
 @property (nullable, nonatomic, strong) UIColor *fillColor;   ///< inner fill color
+@property (nonatomic) CGFloat minimumHeight;                  ///< minimum border height (or width when align in vertical)
 @end
 
 

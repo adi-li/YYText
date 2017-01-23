@@ -314,6 +314,7 @@ YYTextAttributeType YYTextAttributeGetType(NSString *name){
     [aCoder encodeObject:@(self.cornerRadius) forKey:@"cornerRadius"];
     [aCoder encodeObject:self.shadow forKey:@"shadow"];
     [aCoder encodeObject:self.fillColor forKey:@"fillColor"];
+    [aCoder encodeObject:@(self.minimumHeight) forKey:@"minimumHeight"];
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
@@ -326,6 +327,7 @@ YYTextAttributeType YYTextAttributeGetType(NSString *name){
     _cornerRadius = ((NSNumber *)[aDecoder decodeObjectForKey:@"cornerRadius"]).doubleValue;
     _shadow = [aDecoder decodeObjectForKey:@"shadow"];
     _fillColor = [aDecoder decodeObjectForKey:@"fillColor"];
+    _minimumHeight = ((NSNumber *)[aDecoder decodeObjectForKey:@"minimumHeight"]).doubleValue;
     return self;
 }
 
@@ -339,6 +341,7 @@ YYTextAttributeType YYTextAttributeGetType(NSString *name){
     one.cornerRadius = self.cornerRadius;
     one.shadow = self.shadow.copy;
     one.fillColor = self.fillColor;
+    one.minimumHeight = self.minimumHeight;
     return one;
 }
 

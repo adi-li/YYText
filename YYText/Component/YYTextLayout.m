@@ -2403,9 +2403,32 @@ static void YYTextDrawBorderRects(CGContextRef context, CGSize size, YYTextBorde
         CGContextSetShadowWithColor(context, shadow.offset, shadow.radius, shadow.color.CGColor);
         CGContextBeginTransparencyLayer(context, NULL);
     }
+
+    NSMutableArray *updatedRects;
+
+    if (border.minimumHeight == 0) {
+        updatedRects = rects.mutableCopy;
+
+    } else {
+        updatedRects = [NSMutableArray arrayWithCapacity:rects.count];
+
+        for (NSValue *value in rects) {
+            CGRect rect = value.CGRectValue;
+            if (isVertical) {
+                CGFloat centerX = rect.origin.x + rect.size.width / 2;
+                rect.size.width = MAX(rect.size.width, border.minimumHeight);
+                rect.origin.x = centerX - rect.size.width / 2;
+            } else {
+                CGFloat centerY = rect.origin.y + rect.size.height / 2;
+                rect.size.height = MAX(rect.size.height, border.minimumHeight);
+                rect.origin.y = centerY - rect.size.height / 2;
+            }
+            [updatedRects addObject:[NSValue valueWithCGRect:rect]];
+        }
+    }
     
     NSMutableArray *paths = [NSMutableArray new];
-    for (NSValue *value in rects) {
+    for (NSValue *value in updatedRects) {
         CGRect rect = value.CGRectValue;
         if (isVertical) {
             rect = UIEdgeInsetsInsetRect(rect, UIEdgeInsetRotateVertical(border.insets));
@@ -2451,7 +2474,7 @@ static void YYTextDrawBorderRects(CGContextRef context, CGSize size, YYTextBorde
             radiusDelta = 0;
         }
         CGContextSetLineJoin(context, border.lineJoin);
-        for (NSValue *value in rects) {
+        for (NSValue *value in updatedRects) {
             CGRect rect = value.CGRectValue;
             if (isVertical) {
                 rect = UIEdgeInsetsInsetRect(rect, UIEdgeInsetRotateVertical(border.insets));
@@ -2470,7 +2493,7 @@ static void YYTextDrawBorderRects(CGContextRef context, CGSize size, YYTextBorde
         if ((border.lineStyle & 0xFF) == YYTextLineStyleDouble) {
             CGContextSaveGState(context);
             CGFloat inset = -border.strokeWidth * 2;
-            for (NSValue *value in rects) {
+            for (NSValue *value in updatedRects) {
                 CGRect rect = value.CGRectValue;
                 rect = UIEdgeInsetsInsetRect(rect, border.insets);
                 rect = CGRectInset(rect, inset, inset);
@@ -2491,7 +2514,7 @@ static void YYTextDrawBorderRects(CGContextRef context, CGSize size, YYTextBorde
             if (border.cornerRadius <= 0) {
                 radiusDelta = 0;
             }
-            for (NSValue *value in rects) {
+            for (NSValue *value in updatedRects) {
                 CGRect rect = value.CGRectValue;
                 rect = UIEdgeInsetsInsetRect(rect, border.insets);
                 rect = CGRectInset(rect, inset, inset);
